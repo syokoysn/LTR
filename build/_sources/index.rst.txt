@@ -7,15 +7,18 @@ Learning to Rankの勉強部屋
 ===============================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: もくじ
    
    LTR_intro
+   Pointwise
+   Pairwise
+   Listwise
+   terminology
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

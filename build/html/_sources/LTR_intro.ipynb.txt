@@ -15,6 +15,15 @@
   },
   {
    "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## ランキング学習\n",
+    "ランキング学習は,\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
    "metadata": {
     "colab_type": "text",
     "id": "oLsZkw8ksyKW"
@@ -37,18 +46,6 @@
    "cell_type": "markdown",
    "metadata": {
     "colab_type": "text",
-    "id": "HJNxbEMixl1Y"
-   },
-   "source": [
-    "$$ q_{i} : クエリ i  $$\n",
-    "$$ x  : 特徴ベクトル$$\n",
-    "$$y : $$"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {
-    "colab_type": "text",
     "id": "I1X9zfJ7zmsC"
    },
    "source": [
@@ -56,15 +53,17 @@
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": 0,
+   "cell_type": "markdown",
    "metadata": {
-    "colab": {},
-    "colab_type": "code",
-    "id": "F6Q39Tey0CJ5"
+    "colab_type": "text",
+    "id": "HJNxbEMixl1Y"
    },
-   "outputs": [],
-   "source": []
+   "source": [
+    "### 情報の整理\n",
+    "$$ q_{i} : クエリ i  $$\n",
+    "$$ x  : 特徴ベクトル$$\n",
+    "$$y : $$"
+   ]
   }
  ],
  "metadata": {

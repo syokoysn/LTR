@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Learning To RankLTR'
+project = 'Learning To Rank の勉強'
 copyright = '2019, Shoko Yoshino'
 author = 'Shoko Yoshino'
 
