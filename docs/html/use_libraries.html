@@ -1,0 +1,847 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>使ってみたシリーズ &mdash; Learning to Rankの勉強部屋 0.0.0 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'0.0.0',
+              LANGUAGE:'ja',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Learning to Rankの勉強部屋
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">もくじ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LTR_intro.html">1. Introduction to LTR(Learning to rank)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Pointwise.html">2. Pointwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Pairwise.html">2. Pairwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listwise.html">Listwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="summary_and_problem.html">使用するデータ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Learning to Rankの勉強部屋</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>使ってみたシリーズ</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/use_libraries.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="使ってみたシリーズ">
+<h1>使ってみたシリーズ<a class="headerlink" href="#使ってみたシリーズ" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span><span class="o">,</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#from multiprocessing import Pool</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="c1"># load data</span>
+<span class="n">alldata</span> <span class="o">=</span>  <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./data/add_col_data/mergedata.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">usedata</span> <span class="o">=</span>  <span class="n">alldata</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;the_total_time_need_to_fill_questionnaire_form&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;0_if_features_5_and_8_are_equal&#39;</span><span class="p">,</span> <span class="s1">&#39;item_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;how_frequently_the_user_eats_the_SUSHI&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># split</span>
+<span class="n">train_df</span><span class="p">,</span><span class="n">test_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">usedata</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">train_df</span><span class="p">,</span><span class="n">test_df</span> <span class="o">=</span> <span class="n">train_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;user_ID&#39;</span><span class="p">)</span> <span class="p">,</span><span class="n">test_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;user_ID&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">usedata</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;./data/add_col_data/usedata.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;トレーニングデータ :&#39;</span><span class="p">,</span><span class="n">train_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;テストデータ : &#39;</span> <span class="p">,</span><span class="n">test_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+トレーニングデータ : (40000, 17)
+テストデータ :  (10000, 17)
+</pre></div></div>
+</div>
+<div class="section" id="catboost">
+<h2>catboost<a class="headerlink" href="#catboost" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">catboost</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">train_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;user_ID&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">train_label</span> <span class="o">=</span> <span class="n">train_df</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">train_group_id</span> <span class="o">=</span> <span class="n">train_df</span><span class="p">[</span><span class="s2">&quot;user_ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="c1">#.values#[ i for i in range(len(train_df[&quot;user_ID&quot;].values))]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#catboost.Pool?</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">cat_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">12</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cat_features</span><span class="p">)</span>
+<span class="n">train_pool</span> <span class="o">=</span> <span class="n">catboost</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">train_label</span><span class="p">,</span> <span class="n">group_id</span><span class="o">=</span><span class="n">train_group_id</span> <span class="p">,</span> <span class="n">cat_features</span><span class="o">=</span><span class="n">cat_features</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">test_data</span> <span class="o">=</span> <span class="n">test_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;user_ID&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">test_label</span> <span class="o">=</span> <span class="n">test_df</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">test_group_id</span> <span class="o">=</span> <span class="n">test_df</span><span class="p">[</span><span class="s2">&quot;user_ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="c1">#[ i for i in range(len(test_df[&quot;user_ID&quot;].values))]</span>
+<span class="n">test_pool</span> <span class="o">=</span> <span class="n">catboost</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">test_label</span><span class="p">,</span> <span class="n">group_id</span><span class="o">=</span><span class="n">test_group_id</span><span class="p">,</span> <span class="n">cat_features</span><span class="o">=</span><span class="n">cat_features</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">param</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss_function&#39;</span><span class="p">:</span><span class="s1">&#39;YetiRank&#39;</span><span class="p">,</span> <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="o">.</span><span class="mi">05</span><span class="p">,</span> <span class="s1">&#39;iterations&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+         <span class="s1">&#39;depth&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;use_best_model&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">}</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">catboost</span><span class="o">.</span><span class="n">CatBoost</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_pool</span><span class="p">,</span> <span class="n">eval_set</span><span class="o">=</span><span class="n">test_pool</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0:      test: 0.9513635 best: 0.9513635 (0)     total: 481ms    remaining: 1m 35s
+1:      test: 0.9500867 best: 0.9513635 (0)     total: 1.04s    remaining: 1m 43s
+2:      test: 0.9518578 best: 0.9518578 (2)     total: 1.47s    remaining: 1m 36s
+3:      test: 0.9524402 best: 0.9524402 (3)     total: 1.81s    remaining: 1m 28s
+4:      test: 0.9515130 best: 0.9524402 (3)     total: 2.17s    remaining: 1m 24s
+5:      test: 0.9551855 best: 0.9551855 (5)     total: 2.55s    remaining: 1m 22s
+6:      test: 0.9527729 best: 0.9551855 (5)     total: 2.94s    remaining: 1m 21s
+7:      test: 0.9531092 best: 0.9551855 (5)     total: 3.4s     remaining: 1m 21s
+8:      test: 0.9531428 best: 0.9551855 (5)     total: 3.76s    remaining: 1m 19s
+9:      test: 0.9535693 best: 0.9551855 (5)     total: 4.16s    remaining: 1m 18s
+10:     test: 0.9502795 best: 0.9551855 (5)     total: 4.57s    remaining: 1m 18s
+11:     test: 0.9502795 best: 0.9551855 (5)     total: 4.98s    remaining: 1m 18s
+12:     test: 0.9502795 best: 0.9551855 (5)     total: 5.39s    remaining: 1m 17s
+13:     test: 0.9533996 best: 0.9551855 (5)     total: 5.78s    remaining: 1m 16s
+14:     test: 0.9531485 best: 0.9551855 (5)     total: 6.15s    remaining: 1m 15s
+15:     test: 0.9531485 best: 0.9551855 (5)     total: 6.54s    remaining: 1m 15s
+16:     test: 0.9548912 best: 0.9551855 (5)     total: 6.92s    remaining: 1m 14s
+17:     test: 0.9548912 best: 0.9551855 (5)     total: 7.32s    remaining: 1m 14s
+18:     test: 0.9548912 best: 0.9551855 (5)     total: 7.69s    remaining: 1m 13s
+19:     test: 0.9548912 best: 0.9551855 (5)     total: 8.06s    remaining: 1m 12s
+20:     test: 0.9548912 best: 0.9551855 (5)     total: 8.49s    remaining: 1m 12s
+21:     test: 0.9548912 best: 0.9551855 (5)     total: 8.88s    remaining: 1m 11s
+22:     test: 0.9549907 best: 0.9551855 (5)     total: 9.29s    remaining: 1m 11s
+23:     test: 0.9549907 best: 0.9551855 (5)     total: 9.66s    remaining: 1m 10s
+24:     test: 0.9549907 best: 0.9551855 (5)     total: 10.1s    remaining: 1m 10s
+25:     test: 0.9544226 best: 0.9551855 (5)     total: 10.5s    remaining: 1m 9s
+26:     test: 0.9548113 best: 0.9551855 (5)     total: 10.8s    remaining: 1m 9s
+27:     test: 0.9546684 best: 0.9551855 (5)     total: 11.2s    remaining: 1m 8s
+28:     test: 0.9546684 best: 0.9551855 (5)     total: 11.6s    remaining: 1m 8s
+29:     test: 0.9546811 best: 0.9551855 (5)     total: 12s      remaining: 1m 8s
+30:     test: 0.9546811 best: 0.9551855 (5)     total: 12.4s    remaining: 1m 7s
+31:     test: 0.9546811 best: 0.9551855 (5)     total: 12.9s    remaining: 1m 7s
+32:     test: 0.9546811 best: 0.9551855 (5)     total: 13.2s    remaining: 1m 7s
+33:     test: 0.9546811 best: 0.9551855 (5)     total: 13.8s    remaining: 1m 7s
+34:     test: 0.9546811 best: 0.9551855 (5)     total: 14.2s    remaining: 1m 6s
+35:     test: 0.9546811 best: 0.9551855 (5)     total: 14.6s    remaining: 1m 6s
+36:     test: 0.9553417 best: 0.9553417 (36)    total: 15s      remaining: 1m 6s
+37:     test: 0.9553417 best: 0.9553417 (36)    total: 15.5s    remaining: 1m 5s
+38:     test: 0.9553417 best: 0.9553417 (36)    total: 16s      remaining: 1m 6s
+39:     test: 0.9553417 best: 0.9553417 (36)    total: 16.7s    remaining: 1m 6s
+40:     test: 0.9552980 best: 0.9553417 (36)    total: 17.1s    remaining: 1m 6s
+41:     test: 0.9552980 best: 0.9553417 (36)    total: 17.6s    remaining: 1m 6s
+42:     test: 0.9548608 best: 0.9553417 (36)    total: 18s      remaining: 1m 5s
+43:     test: 0.9548608 best: 0.9553417 (36)    total: 18.5s    remaining: 1m 5s
+44:     test: 0.9548608 best: 0.9553417 (36)    total: 19s      remaining: 1m 5s
+45:     test: 0.9548608 best: 0.9553417 (36)    total: 19.4s    remaining: 1m 5s
+46:     test: 0.9548595 best: 0.9553417 (36)    total: 19.9s    remaining: 1m 4s
+47:     test: 0.9550882 best: 0.9553417 (36)    total: 20.2s    remaining: 1m 4s
+48:     test: 0.9550882 best: 0.9553417 (36)    total: 20.7s    remaining: 1m 3s
+49:     test: 0.9550882 best: 0.9553417 (36)    total: 21.1s    remaining: 1m 3s
+50:     test: 0.9550882 best: 0.9553417 (36)    total: 21.5s    remaining: 1m 2s
+51:     test: 0.9545709 best: 0.9553417 (36)    total: 21.9s    remaining: 1m 2s
+52:     test: 0.9546146 best: 0.9553417 (36)    total: 22.4s    remaining: 1m 2s
+53:     test: 0.9546146 best: 0.9553417 (36)    total: 22.8s    remaining: 1m 1s
+54:     test: 0.9546146 best: 0.9553417 (36)    total: 23.2s    remaining: 1m 1s
+55:     test: 0.9545945 best: 0.9553417 (36)    total: 23.6s    remaining: 1m
+56:     test: 0.9545945 best: 0.9553417 (36)    total: 24s      remaining: 1m
+57:     test: 0.9545945 best: 0.9553417 (36)    total: 24.5s    remaining: 59.9s
+58:     test: 0.9551672 best: 0.9553417 (36)    total: 24.9s    remaining: 59.5s
+59:     test: 0.9551672 best: 0.9553417 (36)    total: 25.4s    remaining: 59.3s
+60:     test: 0.9551672 best: 0.9553417 (36)    total: 25.9s    remaining: 59.1s
+61:     test: 0.9551672 best: 0.9553417 (36)    total: 26.4s    remaining: 58.8s
+62:     test: 0.9549281 best: 0.9553417 (36)    total: 27.2s    remaining: 59.1s
+63:     test: 0.9538132 best: 0.9553417 (36)    total: 27.6s    remaining: 58.6s
+64:     test: 0.9538132 best: 0.9553417 (36)    total: 28s      remaining: 58.1s
+65:     test: 0.9538132 best: 0.9553417 (36)    total: 28.4s    remaining: 57.6s
+66:     test: 0.9535560 best: 0.9553417 (36)    total: 28.8s    remaining: 57.1s
+67:     test: 0.9535560 best: 0.9553417 (36)    total: 29.2s    remaining: 56.6s
+68:     test: 0.9535560 best: 0.9553417 (36)    total: 29.6s    remaining: 56.1s
+69:     test: 0.9539658 best: 0.9553417 (36)    total: 29.9s    remaining: 55.5s
+70:     test: 0.9539658 best: 0.9553417 (36)    total: 30.3s    remaining: 55s
+71:     test: 0.9535575 best: 0.9553417 (36)    total: 30.6s    remaining: 54.5s
+72:     test: 0.9535575 best: 0.9553417 (36)    total: 31s      remaining: 53.9s
+73:     test: 0.9533669 best: 0.9553417 (36)    total: 31.3s    remaining: 53.4s
+74:     test: 0.9542301 best: 0.9553417 (36)    total: 31.7s    remaining: 52.8s
+75:     test: 0.9542301 best: 0.9553417 (36)    total: 32s      remaining: 52.2s
+76:     test: 0.9546273 best: 0.9553417 (36)    total: 32.5s    remaining: 51.9s
+77:     test: 0.9546273 best: 0.9553417 (36)    total: 32.8s    remaining: 51.4s
+78:     test: 0.9546273 best: 0.9553417 (36)    total: 33.2s    remaining: 50.8s
+79:     test: 0.9546273 best: 0.9553417 (36)    total: 33.6s    remaining: 50.4s
+80:     test: 0.9563979 best: 0.9563979 (80)    total: 33.9s    remaining: 49.9s
+81:     test: 0.9566165 best: 0.9566165 (81)    total: 34.3s    remaining: 49.4s
+82:     test: 0.9567737 best: 0.9567737 (82)    total: 34.7s    remaining: 48.9s
+83:     test: 0.9567737 best: 0.9567737 (82)    total: 35.1s    remaining: 48.4s
+84:     test: 0.9567737 best: 0.9567737 (82)    total: 35.5s    remaining: 48s
+85:     test: 0.9567737 best: 0.9567737 (82)    total: 35.8s    remaining: 47.5s
+86:     test: 0.9570215 best: 0.9570215 (86)    total: 36.2s    remaining: 47s
+87:     test: 0.9570215 best: 0.9570215 (86)    total: 36.7s    remaining: 46.7s
+88:     test: 0.9570215 best: 0.9570215 (86)    total: 37.3s    remaining: 46.5s
+89:     test: 0.9570215 best: 0.9570215 (86)    total: 38.1s    remaining: 46.5s
+90:     test: 0.9574030 best: 0.9574030 (90)    total: 38.5s    remaining: 46.2s
+91:     test: 0.9574030 best: 0.9574030 (90)    total: 39s      remaining: 45.7s
+92:     test: 0.9575642 best: 0.9575642 (92)    total: 39.4s    remaining: 45.3s
+93:     test: 0.9573456 best: 0.9575642 (92)    total: 39.8s    remaining: 44.8s
+94:     test: 0.9573456 best: 0.9575642 (92)    total: 40.2s    remaining: 44.4s
+95:     test: 0.9573456 best: 0.9575642 (92)    total: 40.6s    remaining: 44s
+96:     test: 0.9572213 best: 0.9575642 (92)    total: 41s      remaining: 43.5s
+97:     test: 0.9572213 best: 0.9575642 (92)    total: 41.4s    remaining: 43.1s
+98:     test: 0.9572213 best: 0.9575642 (92)    total: 41.9s    remaining: 42.7s
+99:     test: 0.9572213 best: 0.9575642 (92)    total: 42.3s    remaining: 42.3s
+100:    test: 0.9572213 best: 0.9575642 (92)    total: 42.8s    remaining: 42s
+101:    test: 0.9572213 best: 0.9575642 (92)    total: 43.4s    remaining: 41.7s
+102:    test: 0.9572213 best: 0.9575642 (92)    total: 43.8s    remaining: 41.3s
+103:    test: 0.9572213 best: 0.9575642 (92)    total: 44.2s    remaining: 40.8s
+104:    test: 0.9572213 best: 0.9575642 (92)    total: 44.6s    remaining: 40.4s
+105:    test: 0.9567292 best: 0.9575642 (92)    total: 45.4s    remaining: 40.2s
+106:    test: 0.9567292 best: 0.9575642 (92)    total: 46s      remaining: 40s
+107:    test: 0.9570912 best: 0.9575642 (92)    total: 46.6s    remaining: 39.7s
+108:    test: 0.9570912 best: 0.9575642 (92)    total: 47.3s    remaining: 39.5s
+109:    test: 0.9570912 best: 0.9575642 (92)    total: 47.8s    remaining: 39.1s
+110:    test: 0.9570912 best: 0.9575642 (92)    total: 48.8s    remaining: 39.1s
+111:    test: 0.9567998 best: 0.9575642 (92)    total: 49.2s    remaining: 38.7s
+112:    test: 0.9567998 best: 0.9575642 (92)    total: 49.8s    remaining: 38.3s
+113:    test: 0.9567998 best: 0.9575642 (92)    total: 50.2s    remaining: 37.9s
+114:    test: 0.9567998 best: 0.9575642 (92)    total: 50.5s    remaining: 37.4s
+115:    test: 0.9570912 best: 0.9575642 (92)    total: 50.9s    remaining: 36.8s
+116:    test: 0.9570912 best: 0.9575642 (92)    total: 51.2s    remaining: 36.4s
+117:    test: 0.9570912 best: 0.9575642 (92)    total: 51.6s    remaining: 35.8s
+118:    test: 0.9570912 best: 0.9575642 (92)    total: 51.9s    remaining: 35.3s
+119:    test: 0.9570912 best: 0.9575642 (92)    total: 52.3s    remaining: 34.9s
+120:    test: 0.9569769 best: 0.9575642 (92)    total: 52.7s    remaining: 34.4s
+121:    test: 0.9568896 best: 0.9575642 (92)    total: 53.1s    remaining: 33.9s
+122:    test: 0.9568896 best: 0.9575642 (92)    total: 53.4s    remaining: 33.4s
+123:    test: 0.9569232 best: 0.9575642 (92)    total: 53.8s    remaining: 33s
+124:    test: 0.9579242 best: 0.9579242 (124)   total: 54.2s    remaining: 32.5s
+125:    test: 0.9587268 best: 0.9587268 (125)   total: 54.5s    remaining: 32s
+126:    test: 0.9590225 best: 0.9590225 (126)   total: 55s      remaining: 31.6s
+127:    test: 0.9589939 best: 0.9590225 (126)   total: 55.3s    remaining: 31.1s
+128:    test: 0.9589939 best: 0.9590225 (126)   total: 55.7s    remaining: 30.6s
+129:    test: 0.9591883 best: 0.9591883 (129)   total: 56s      remaining: 30.2s
+130:    test: 0.9589026 best: 0.9591883 (129)   total: 56.4s    remaining: 29.7s
+131:    test: 0.9589026 best: 0.9591883 (129)   total: 56.7s    remaining: 29.2s
+132:    test: 0.9588690 best: 0.9591883 (129)   total: 57.1s    remaining: 28.8s
+133:    test: 0.9589362 best: 0.9591883 (129)   total: 57.4s    remaining: 28.3s
+134:    test: 0.9586505 best: 0.9591883 (129)   total: 57.8s    remaining: 27.8s
+135:    test: 0.9589076 best: 0.9591883 (129)   total: 58.2s    remaining: 27.4s
+136:    test: 0.9589076 best: 0.9591883 (129)   total: 58.5s    remaining: 26.9s
+137:    test: 0.9589076 best: 0.9591883 (129)   total: 58.9s    remaining: 26.5s
+138:    test: 0.9584167 best: 0.9591883 (129)   total: 59.2s    remaining: 26s
+139:    test: 0.9585881 best: 0.9591883 (129)   total: 59.6s    remaining: 25.5s
+140:    test: 0.9585881 best: 0.9591883 (129)   total: 59.9s    remaining: 25.1s
+141:    test: 0.9581594 best: 0.9591883 (129)   total: 1m       remaining: 24.6s
+142:    test: 0.9582972 best: 0.9591883 (129)   total: 1m       remaining: 24.2s
+143:    test: 0.9582972 best: 0.9591883 (129)   total: 1m 1s    remaining: 23.7s
+144:    test: 0.9584838 best: 0.9591883 (129)   total: 1m 1s    remaining: 23.3s
+145:    test: 0.9584838 best: 0.9591883 (129)   total: 1m 1s    remaining: 22.8s
+146:    test: 0.9584838 best: 0.9591883 (129)   total: 1m 2s    remaining: 22.4s
+147:    test: 0.9582658 best: 0.9591883 (129)   total: 1m 2s    remaining: 21.9s
+148:    test: 0.9584373 best: 0.9591883 (129)   total: 1m 2s    remaining: 21.5s
+149:    test: 0.9584373 best: 0.9591883 (129)   total: 1m 3s    remaining: 21s
+150:    test: 0.9585230 best: 0.9591883 (129)   total: 1m 3s    remaining: 20.6s
+151:    test: 0.9584501 best: 0.9591883 (129)   total: 1m 3s    remaining: 20.1s
+152:    test: 0.9584894 best: 0.9591883 (129)   total: 1m 4s    remaining: 19.7s
+153:    test: 0.9586989 best: 0.9591883 (129)   total: 1m 4s    remaining: 19.3s
+154:    test: 0.9587561 best: 0.9591883 (129)   total: 1m 4s    remaining: 18.8s
+155:    test: 0.9585064 best: 0.9591883 (129)   total: 1m 5s    remaining: 18.4s
+156:    test: 0.9585064 best: 0.9591883 (129)   total: 1m 5s    remaining: 17.9s
+157:    test: 0.9587250 best: 0.9591883 (129)   total: 1m 5s    remaining: 17.5s
+158:    test: 0.9587923 best: 0.9591883 (129)   total: 1m 6s    remaining: 17.1s
+159:    test: 0.9589637 best: 0.9591883 (129)   total: 1m 6s    remaining: 16.6s
+160:    test: 0.9589637 best: 0.9591883 (129)   total: 1m 6s    remaining: 16.2s
+161:    test: 0.9589637 best: 0.9591883 (129)   total: 1m 7s    remaining: 15.8s
+162:    test: 0.9587923 best: 0.9591883 (129)   total: 1m 7s    remaining: 15.4s
+163:    test: 0.9587923 best: 0.9591883 (129)   total: 1m 8s    remaining: 14.9s
+164:    test: 0.9585015 best: 0.9591883 (129)   total: 1m 8s    remaining: 14.5s
+165:    test: 0.9585015 best: 0.9591883 (129)   total: 1m 8s    remaining: 14.1s
+166:    test: 0.9584448 best: 0.9591883 (129)   total: 1m 9s    remaining: 13.7s
+167:    test: 0.9584448 best: 0.9591883 (129)   total: 1m 9s    remaining: 13.2s
+168:    test: 0.9584448 best: 0.9591883 (129)   total: 1m 9s    remaining: 12.8s
+169:    test: 0.9584448 best: 0.9591883 (129)   total: 1m 10s   remaining: 12.4s
+170:    test: 0.9584448 best: 0.9591883 (129)   total: 1m 10s   remaining: 12s
+171:    test: 0.9584112 best: 0.9591883 (129)   total: 1m 10s   remaining: 11.5s
+172:    test: 0.9587020 best: 0.9591883 (129)   total: 1m 11s   remaining: 11.1s
+173:    test: 0.9587020 best: 0.9591883 (129)   total: 1m 11s   remaining: 10.7s
+174:    test: 0.9587020 best: 0.9591883 (129)   total: 1m 11s   remaining: 10.3s
+175:    test: 0.9587020 best: 0.9591883 (129)   total: 1m 12s   remaining: 9.86s
+176:    test: 0.9585306 best: 0.9591883 (129)   total: 1m 12s   remaining: 9.44s
+177:    test: 0.9585306 best: 0.9591883 (129)   total: 1m 13s   remaining: 9.02s
+178:    test: 0.9584633 best: 0.9591883 (129)   total: 1m 13s   remaining: 8.61s
+179:    test: 0.9584633 best: 0.9591883 (129)   total: 1m 13s   remaining: 8.19s
+180:    test: 0.9585306 best: 0.9591883 (129)   total: 1m 14s   remaining: 7.78s
+181:    test: 0.9585306 best: 0.9591883 (129)   total: 1m 14s   remaining: 7.36s
+182:    test: 0.9585306 best: 0.9591883 (129)   total: 1m 14s   remaining: 6.95s
+183:    test: 0.9585306 best: 0.9591883 (129)   total: 1m 15s   remaining: 6.54s
+184:    test: 0.9583591 best: 0.9591883 (129)   total: 1m 15s   remaining: 6.13s
+185:    test: 0.9584600 best: 0.9591883 (129)   total: 1m 15s   remaining: 5.72s
+186:    test: 0.9584600 best: 0.9591883 (129)   total: 1m 16s   remaining: 5.31s
+187:    test: 0.9585838 best: 0.9591883 (129)   total: 1m 16s   remaining: 4.9s
+188:    test: 0.9585838 best: 0.9591883 (129)   total: 1m 17s   remaining: 4.49s
+189:    test: 0.9574690 best: 0.9591883 (129)   total: 1m 17s   remaining: 4.08s
+190:    test: 0.9574018 best: 0.9591883 (129)   total: 1m 17s   remaining: 3.67s
+191:    test: 0.9574018 best: 0.9591883 (129)   total: 1m 18s   remaining: 3.26s
+192:    test: 0.9574388 best: 0.9591883 (129)   total: 1m 18s   remaining: 2.85s
+193:    test: 0.9574388 best: 0.9591883 (129)   total: 1m 18s   remaining: 2.44s
+194:    test: 0.9575546 best: 0.9591883 (129)   total: 1m 19s   remaining: 2.03s
+195:    test: 0.9576218 best: 0.9591883 (129)   total: 1m 19s   remaining: 1.62s
+196:    test: 0.9575060 best: 0.9591883 (129)   total: 1m 20s   remaining: 1.22s
+197:    test: 0.9575396 best: 0.9591883 (129)   total: 1m 20s   remaining: 812ms
+198:    test: 0.9575396 best: 0.9591883 (129)   total: 1m 20s   remaining: 406ms
+199:    test: 0.9574537 best: 0.9591883 (129)   total: 1m 21s   remaining: 0us
+
+bestTest = 0.9591883491
+bestIteration = 129
+
+Shrink model to first 130 iterations.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;catboost.core.CatBoost at 0x10d934828&gt;
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pred_score</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>array([ 0.31279626, -0.57645771,  0.34523635, ..., -0.42156022,
+        0.06092889,  0.04343528])
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Shoko Yoshino
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

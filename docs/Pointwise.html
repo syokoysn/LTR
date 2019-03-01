@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1. Pointwise &mdash; Learning To Rank の勉強 0.0.0 ドキュメント</title>
+  <title>2. Pointwise &mdash; Learning to Rankの勉強部屋 0.0.0 ドキュメント</title>
   
 
   
@@ -46,8 +46,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="next" title="Pairwise" href="Pairwise.html" />
-    <link rel="prev" title="LTRって?" href="LTR_intro.html" /> 
+    <link rel="next" title="2. Pairwise" href="Pairwise.html" />
+    <link rel="prev" title="1. Introduction to LTR(Learning to rank)" href="LTR_intro.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +61,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Learning To Rank の勉強
+            <a href="index.html" class="icon icon-home"> Learning to Rankの勉強部屋
           
 
           
@@ -93,17 +93,28 @@
             
               <p class="caption"><span class="caption-text">もくじ</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="LTR_intro.html">LTRって?</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Pointwise</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#1.2-実装">1.2 実装</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#データの説明">データの説明</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LTR_intro.html">1. Introduction to LTR(Learning to rank)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Pointwise</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#2.1-回帰ベースのアルゴリズム">2.1 回帰ベースのアルゴリズム</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#2.2-分類ベースのアルゴリズム">2.2 分類ベースのアルゴリズム</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#2.2.1-バイナリー分類">2.2.1 バイナリー分類</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#2.2.1.1-SVMベースの方法">2.2.1.1 SVMベースの方法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#2.2.1.2-Logistic回帰ベースの方法">2.2.1.2 Logistic回帰ベースの方法</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#2.2.2-マルチクラスの分類">2.2.2 マルチクラスの分類</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#2.2.2.1-ブースティングベースの方法">2.2.2.1 ブースティングベースの方法</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Pairwise.html">Pairwise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#2.3-順序回帰ベースのアルゴリズム">2.3 順序回帰ベースのアルゴリズム</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Pairwise.html">2. Pairwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Listwise.html">Listwise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terminology.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="summary_and_problem.html">使用するデータ</a></li>
 </ul>
 
             
@@ -118,7 +129,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Learning To Rank の勉強</a>
+          <a href="index.html">Learning to Rankの勉強部屋</a>
         
       </nav>
 
@@ -149,7 +160,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>1. Pointwise</li>
+      <li>2. Pointwise</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -390,1551 +401,138 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="1.-Pointwise">
-<h1>1. Pointwise<a class="headerlink" href="#1.-Pointwise" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/syokoysn/LTR/blob/master/source/Pointwise.ipynb"><img alt="colab-logo" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<div class="section" id="2.-Pointwise">
+<h1>2. Pointwise<a class="headerlink" href="#2.-Pointwise" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <div class="line-block">
 <div class="line">PointwiseとはLTRにおける代表的なアプローチの一つのである.</div>
-<div class="line">ここでは，Pointwiseがどのようなアルゴリズムであるかの説明とデータを用いて実際に実装してみるすることで理解する．</div>
+<div class="line">ここでは，Pointwiseがどのようなアルゴリズムであるかの説明と共にデータを用いて実際に実装してみるすることで理解する．</div>
 </div>
-<p>すること ## 1.1 理論説明</p>
-<div class="section" id="1.2-実装">
-<h2>1.2 実装<a class="headerlink" href="#1.2-実装" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p><strong>Pointwise</strong>の入力と出力は以下のようになる.</p>
+<p>入力</p>
+<p>出力</p>
+<p>Pontwiseの代表的なアプローチ方法として以下の三つを取り上げる</p>
+<ul class="simple">
+<li>回帰ベースのアルゴリズム</li>
+<li>分類ベースのアルゴリズム</li>
+<li>順序回帰ベースのアルゴリズム</li>
+</ul>
+<div class="line-block">
+<div class="line">回帰ベースのアルゴリズムの出力は実数値に関連したスコアが含まれる.</div>
+<div class="line">分類ベースのアルゴリズムの出力は</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>データの概要と問題設定</strong></div>
+<div class="line">ここで用いるデータの概要と想定する問題についてはこちら(リンクつける)</div>
+</div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span></span><span class="c1"># iniitial setting</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span><span class="o">,</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LinearRegression</span>
+<span class="c1"># load data</span>
+<span class="c1">#score = pd.read_csv(&#39;./data/add_col_data/score.csv&#39;, index_col=0)</span>
+<span class="c1">#udata = pd.read_csv(&#39;./data/add_col_data/udata.csv&#39;, index_col=0)</span>
+<span class="c1">#idata =  pd.read_csv(&#39;./data/add_col_data/idata.csv&#39;, index_col=0)</span>
+<span class="n">usedata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./data/add_col_data/usedata.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">dum</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;prefecture_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;region_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;east/west_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;currently_prefecture_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;currently _regional_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;currently_east/west_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;major_group&#39;</span><span class="p">,</span> <span class="s1">&#39;minor_group&#39;</span><span class="p">]</span>
+<span class="n">dumdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">usedata</span><span class="p">,</span><span class="n">columns</span> <span class="o">=</span>  <span class="n">dum</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span>  <span class="n">dumdata</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;user_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span> <span class="mi">1</span><span class="p">);</span><span class="n">Y</span> <span class="o">=</span> <span class="n">dumdata</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="データの説明">
-<h3>データの説明<a class="headerlink" href="#データの説明" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<hr class="docutils" />
+<div class="section" id="2.1-回帰ベースのアルゴリズム">
+<h2>2.1 回帰ベースのアルゴリズム<a class="headerlink" href="#2.1-回帰ベースのアルゴリズム" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="line-block">
+<div class="line">ランキングの問題は回帰の問題に置き換えられる. 回帰は,予測しようとしている目的変数が連続的である,教師ありアルゴリズムの一種である.</div>
+<div class="line">ランキングを回帰として定式化する時, 連続変数として与えられた関連度は連続的なものと見なし,トレーニングセットの損失を最小にすることによってランキング関数を学習します.そして, トレーニングセットの損失を最小化するようにランキング関数を学習します.</div>
+</div>
+<p>トレーニングセットと損失関数は以下のようになる.</p>
+<p>トレーニングセット</p>
+<div class="math notranslate nohighlight">
+\[q : クエリの集合\]</div>
+<div class="math notranslate nohighlight">
+\[X : クエリの特徴ベクトル =&gt; \{x_{j} \}^m_{j = 1}\]</div>
+<div class="math notranslate nohighlight">
+\[Y :クエリの正解ラベル =&gt; \{y_{j}\}^{m}_{j = 1}\]</div>
+<div class="math notranslate nohighlight">
+\[f(x): クエリに対する scoring function\]</div>
+<p>損失関数</p>
+<div class="math notranslate nohighlight">
+\[L(f; x_{j},y_{j}) = (y_{j} - f(x_{j}))^2\]</div>
+<p><strong>実装</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../Downloads/sushi3-2016/sushi3b.5000.10.score&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">)</span>
+<span class="n">predict_data</span> <span class="o">=</span> <span class="n">model4</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">ranking</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([(</span> <span class="n">n</span><span class="p">,</span><span class="n">i</span> <span class="p">)</span><span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">predict_data</span><span class="p">)],</span> <span class="n">key</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ranking</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;番目のクエリ&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+6331 番目のクエリ 3.888824462890625
+6333 番目のクエリ 3.834686279296875
+10904 番目のクエリ 3.819671630859375
+10298 番目のクエリ 3.815643310546875
+5303 番目のクエリ 3.809173583984375
+9041 番目のクエリ 3.805755615234375
+1412 番目のクエリ 3.801116943359375
+5462 番目のクエリ 3.795806884765625
+5561 番目のクエリ 3.763397216796875
+11371 番目のクエリ 3.747650146484375
+</pre></div></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="2.2-分類ベースのアルゴリズム">
+<h2>2.2 分類ベースのアルゴリズム<a class="headerlink" href="#2.2-分類ベースのアルゴリズム" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>回帰と同様にランキング問題を分類問題として扱うこともできる. 分類は,予測しようとしている目的変数が離散的である,教師ありアルゴリズムの一種である. ランキングを分類として定式化する時, 関連度をカテゴリラベルと見なします.</p>
+<div class="section" id="2.2.1-バイナリー分類">
+<h3>2.2.1 バイナリー分類<a class="headerlink" href="#2.2.1-バイナリー分類" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="2.2.1.1-SVMベースの方法">
+<h4>2.2.1.1 SVMベースの方法<a class="headerlink" href="#2.2.1.1-SVMベースの方法" title="このヘッドラインへのパーマリンク">¶</a></h4>
+</div>
+<div class="section" id="2.2.1.2-Logistic回帰ベースの方法">
+<h4>2.2.1.2 Logistic回帰ベースの方法<a class="headerlink" href="#2.2.1.2-Logistic回帰ベースの方法" title="このヘッドラインへのパーマリンク">¶</a></h4>
+</div>
+</div>
+<div class="section" id="2.2.2-マルチクラスの分類">
+<h3>2.2.2 マルチクラスの分類<a class="headerlink" href="#2.2.2-マルチクラスの分類" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="2.2.2.1-ブースティングベースの方法">
+<h4>2.2.2.1 ブースティングベースの方法<a class="headerlink" href="#2.2.2.1-ブースティングベースの方法" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
 </pre></div>
 </div>
-<div class="output_area rendered_html docutils container">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>-1</th>
-      <th>0</th>
-      <th>-1.1</th>
-      <th>4</th>
-      <th>2</th>
-      <th>-1.2</th>
-      <th>-1.3</th>
-      <th>-1.4</th>
-      <th>-1.5</th>
-      <th>-1.6</th>
-      <th>...</th>
-      <th>-1.80</th>
-      <th>-1.81</th>
-      <th>-1.82</th>
-      <th>-1.83</th>
-      <th>-1.84</th>
-      <th>-1.85</th>
-      <th>-1.86</th>
-      <th>-1.87</th>
-      <th>-1.88</th>
-      <th>-1.89</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>-1</td>
-      <td>3</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>4</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>3</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>3</td>
-      <td>4</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>3</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>0</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>1</td>
-      <td>1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>-1</td>
-      <td>4</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>-1</td>
-      <td>4</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>3</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>3</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>4969</th>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>3</td>
-      <td>2</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4970</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4971</th>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4972</th>
-      <td>3</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4973</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4974</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4975</th>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4976</th>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4977</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4978</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4979</th>
-      <td>-1</td>
-      <td>4</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4980</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4981</th>
-      <td>3</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4982</th>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4983</th>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4984</th>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4985</th>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4986</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4987</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4988</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4989</th>
-      <td>4</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4990</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4991</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4992</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4993</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4994</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4995</th>
-      <td>3</td>
-      <td>4</td>
-      <td>2</td>
-      <td>-1</td>
-      <td>1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4996</th>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4997</th>
-      <td>-1</td>
-      <td>4</td>
-      <td>4</td>
-      <td>4</td>
-      <td>0</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-    <tr>
-      <th>4998</th>
-      <td>-1</td>
-      <td>-1</td>
-      <td>3</td>
-      <td>4</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>4</td>
-      <td>4</td>
-      <td>...</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-      <td>-1</td>
-    </tr>
-  </tbody>
-</table>
-<p>4999 rows × 100 columns</p>
-</div></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">####</span>
+</pre></div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="2.3-順序回帰ベースのアルゴリズム">
+<h2>2.3 順序回帰ベースのアルゴリズム<a class="headerlink" href="#2.3-順序回帰ベースのアルゴリズム" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -1943,6 +541,21 @@ div.rendered_html tbody tr:hover {
 <span></span>
 </pre></div>
 </div>
+</div>
+<hr class="docutils" />
+<p>参考 <a class="reference external" href="http://times.cs.uiuc.edu/course/598f14/l2r.pdf">http://times.cs.uiuc.edu/course/598f14/l2r.pdf</a></p>
+<p>参考 <a class="reference external" href="https://www.cl.cam.ac.uk/teaching/1516/R222/l2r-overview.pdf">https://www.cl.cam.ac.uk/teaching/1516/R222/l2r-overview.pdf</a></p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://papers.nips.cc/paper/3270-mcrank-learning-to-rank-using-multiple-classification-and-gradient-boosting.pdf">分類ベースの論文</a></div>
+<div class="line"><a class="reference external" href="https://web.stanford.edu/~hastie/Papers/AdditiveLogisticRegression/alr.pdf">分類ベースの論文2</a></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -1956,10 +569,10 @@ div.rendered_html tbody tr:hover {
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Pairwise.html" class="btn btn-neutral float-right" title="Pairwise" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Pairwise.html" class="btn btn-neutral float-right" title="2. Pairwise" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="LTR_intro.html" class="btn btn-neutral float-left" title="LTRって?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="LTR_intro.html" class="btn btn-neutral float-left" title="1. Introduction to LTR(Learning to rank)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -1,0 +1,169 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 使用するデータ"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "1. SUSHI Preference Data Sets \n",
+    "\n",
+    "> 元のデータは,列名がないため少し列名を追加したり少し手を加えてます．\n",
+    "\n",
+    "2. Microsoft Learning to Rank Datasets  \n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "***\n",
+    "\n",
+    "SUSHI Preference Data Sets データに列名追加してcsvで保存"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "データに列名追加\n",
+    "\n",
+    "\n",
+    "```python \n",
+    "# iniitial setting \n",
+    "import pandas as pd, numpy as np\n",
+    "# load data\n",
+    "data1 = pd.read_table('./data/sushi3-2016/sushi3b.5000.10.score', sep = ' ',names=list(range(100)) )# \n",
+    "\n",
+    "# \n",
+    "idata_col =  ['item_ID', 'name','style', 'major_group ','minor_group','the_heaviness/oiliness_in_taste',\n",
+    "                  'how_frequently_the_user_eats_the_SUSHI','normalized price', 'how_frequently_the_SUSHI_is_sold_in_sushi_shop']\n",
+    "data2 = pd.read_table('./data/sushi3-2016/sushi3.idata', sep = '\\t' ,names=idata_col) # \n",
+    "\n",
+    "# \n",
+    "udata_col = ['user_ID', 'gender','age', 'the_total_time_need_to_fill_questionnaire_form',\n",
+    "                'prefecture_ID', 'region_ID', 'east/west_ID', 'currently_prefecture_ID','currently _regional_ID','currently_east/west_ID','0_if_features_5_and_8_are_equal']\n",
+    "data3 = pd.read_table('./data/sushi3-2016/sushi3.udata', names= udata_col)\n",
+    "\n",
+    "data1.to_csv('./data/add_col_data/score.csv')\n",
+    "data2.to_csv('./data/add_col_data/idata.csv')\n",
+    "data3.to_csv('./data/add_col_data/udata.csv')\n",
+    "```\n",
+    "\n",
+    "列名追加したcsvからmergeしたデータ作成\n",
+    "\n",
+    "```pytyhon \n",
+    "\n",
+    "import pandas as pd, numpy as np\n",
+    "score = pd.read_csv('./data/add_col_data/score.csv', index_col=0)\n",
+    "udata = pd.read_csv('./data/add_col_data/udata.csv', index_col=0) \n",
+    "idata =  pd.read_csv('./data/add_col_data/idata.csv', index_col=0) \n",
+    "\n",
+    "result= [] \n",
+    "for u in range(udata.shape[0]):\n",
+    "    #print(u)\n",
+    "    #print(udata.user_ID[u])\n",
+    "    for i in idata.item_ID:\n",
+    "        s = score.iat[u,i]\n",
+    "        if s >=0 :\n",
+    "            result.append((u,i,s))\n",
+    "    \n",
+    "array = []\n",
+    "for i in result :\n",
+    "    s = pd.concat([udata.loc[i[0],:],idata.loc[i[1],:]])\n",
+    "    s['score'] = i[2]\n",
+    "    array.append(s.values)\n",
+    "df =  pd.DataFrame(array, columns=s.index)\n",
+    "\n",
+    "\n",
+    "df.to_csv('./data/add_col_data/mergedata.csv') \n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# iniitial setting \n",
+    "import pandas as pd, numpy as np\n",
+    "# load data\n",
+    "data1 = pd.read_table('./data/sushi3-2016/sushi3b.5000.10.score', sep = ' ', names=list(range(100)) )# \n",
+    "\n",
+    "# \n",
+    "idata_col =  ['item_ID', 'name','style', 'major_group','minor_group','the_heaviness/oiliness_in_taste',\n",
+    "                  'how_frequently_the_user_eats_the_SUSHI','normalized price', 'how_frequently_the_SUSHI_is_sold_in_sushi_shop']\n",
+    "data2 = pd.read_table('./data/sushi3-2016/sushi3.idata', sep = '\\t' ,names=idata_col) # \n",
+    "\n",
+    "# \n",
+    "udata_col = ['user_ID', 'gender','age', 'the_total_time_need_to_fill_questionnaire_form',\n",
+    "                'prefecture_ID', 'region_ID', 'east/west_ID', 'currently_prefecture_ID','currently _regional_ID','currently_east/west_ID','0_if_features_5_and_8_are_equal']\n",
+    "data3 = pd.read_table('./data/sushi3-2016/sushi3.udata', names= udata_col)\n",
+    "\n",
+    "data1.to_csv('./data/add_col_data/score.csv')\n",
+    "data2.to_csv('./data/add_col_data/idata.csv')\n",
+    "data3.to_csv('./data/add_col_data/udata.csv')\n",
+    "\n",
+    "\n",
+    "import pandas as pd, numpy as np\n",
+    "score = pd.read_csv('./data/add_col_data/score.csv', index_col=0)\n",
+    "udata = pd.read_csv('./data/add_col_data/udata.csv', index_col=0) \n",
+    "idata =  pd.read_csv('./data/add_col_data/idata.csv', index_col=0) \n",
+    "\n",
+    "result= [] \n",
+    "for u in range(udata.shape[0]):\n",
+    "    #print(u)\n",
+    "    #print(udata.user_ID[u])\n",
+    "    for i in idata.item_ID:\n",
+    "        s = score.iat[u,i]\n",
+    "        if s >=0 :\n",
+    "            result.append((u,i,s))\n",
+    "    \n",
+    "array = []\n",
+    "for i in result :\n",
+    "    s = pd.concat([udata.loc[i[0],:],idata.loc[i[1],:]])\n",
+    "    s['score'] = i[2]\n",
+    "    array.append(s.values)\n",
+    "df =  pd.DataFrame(array, columns=s.index)\n",
+    "\n",
+    "\n",
+    "df.to_csv('./data/add_col_data/mergedata.csv') "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

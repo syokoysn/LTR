@@ -15,7 +15,8 @@ Learning to Rankの勉強部屋
    Pairwise
    Listwise
    terminology
-
+   summary_and_problem
+   use_libraries
 
 Indices and tables
 ==================

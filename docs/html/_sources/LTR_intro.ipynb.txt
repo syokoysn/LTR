@@ -7,62 +7,46 @@
     "id": "yooMIAFhsSIX"
    },
    "source": [
-    "# LTRって?\n",
-    "\n",
-    "LTR はLearning To Rank の頭文字です.  \n",
-    "つまりランキング学習のこと\n"
+    "# 1. Introduction to LTR(Learning to rank)\n",
+    "LTR はLearning To Rank の頭文字です.   \n",
+    "日本語では,ランキング学習やランク学習と呼ばれています．"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## ランキング学習\n",
-    "ランキング学習は,\n",
-    "\n"
+    "## 1.1 LTR(ランキング学習)って?\n",
+    "LTRはランク付け問題を解くために機械学習の技術を適用して問題を求解する機械学習の一つである．  \n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1.2 LRTの一般的な構造"
    ]
   },
   {
    "cell_type": "markdown",
-   "metadata": {
-    "colab_type": "text",
-    "id": "oLsZkw8ksyKW"
-   },
+   "metadata": {},
    "source": [
-    "## Learning To Rank のフレームワーク\n"
+    "![pict1](./pict/LTRpict1.png)"
    ]
   },
   {
    "cell_type": "markdown",
-   "metadata": {
-    "colab_type": "text",
-    "id": "KUVG0qFov_7h"
-   },
+   "metadata": {},
    "source": [
-    "![LTRpict1](./pict/LTRpict1.png)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {
-    "colab_type": "text",
-    "id": "I1X9zfJ7zmsC"
-   },
-   "source": [
-    "大体のLTRアルゴリズムは上の図のような仕組みとなっている.  \n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {
-    "colab_type": "text",
-    "id": "HJNxbEMixl1Y"
-   },
-   "source": [
-    "### 情報の整理\n",
-    "$$ q_{i} : クエリ i  $$\n",
-    "$$ x  : 特徴ベクトル$$\n",
-    "$$y : $$"
+    "## 参考\n",
+    "- [Learning to Rank for Information Retrieval](https://www.cda.cn/uploadfile/image/20151220/20151220115436_46293.pdf) "
    ]
   }
  ],
